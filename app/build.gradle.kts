@@ -4,9 +4,11 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp")
 }
+
 android {
     namespace = "com.meshchat.offline"
     compileSdk = 35
+
     defaultConfig {
         applicationId = "com.meshchat.offline"
         minSdk = 26
@@ -14,8 +16,22 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
-    buildFeatures { compose = true }
+
+    // Keep Java, Kotlin and KSP on the same JVM target.
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    buildFeatures {
+        compose = true
+    }
 }
+
 dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.12.01"))
     implementation("androidx.activity:activity-compose:1.10.0")
