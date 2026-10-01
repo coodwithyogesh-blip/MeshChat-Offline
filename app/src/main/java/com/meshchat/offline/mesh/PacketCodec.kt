@@ -1,0 +1,3 @@
+package com.meshchat.offline.mesh
+import java.nio.charset.StandardCharsets
+object PacketCodec{fun encode(p:PacketEnvelope):ByteArray{require(p.ttl in 0..16&&p.payload.length<=48000);return listOf(p.packetId,p.originId,p.destinationId,p.ttl.toString(),p.type,p.timestamp.toString(),p.payload).joinToString("\n").toByteArray(StandardCharsets.UTF_8)};fun decode(bytes:ByteArray):PacketEnvelope{require(bytes.size<=64000);val x=bytes.toString(StandardCharsets.UTF_8).split("\n",limit=7);require(x.size==7);val ttl=x[3].toInt();require(ttl in 0..16);return PacketEnvelope(x[0],x[1],x[2],ttl,x[4],x[6],x[5].toLong())}}
