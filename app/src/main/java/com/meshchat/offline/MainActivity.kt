@@ -13,9 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.meshchat.offline.relay.RelayService
+
 class MainActivity:ComponentActivity(){
  private val permissions=registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){}
  override fun onCreate(savedInstanceState:Bundle?){super.onCreate(savedInstanceState);setContent{MeshChatApp()}}
+ @OptIn(ExperimentalMaterial3Api::class)
  @Composable fun MeshChatApp(){var tab by remember{mutableIntStateOf(0)};val tabs=listOf("Chats","Calls","Status","Groups","Relay","Settings");MaterialTheme{Scaffold(topBar={TopAppBar(title={Text("MeshChat Offline")})},bottomBar={NavigationBar{tabs.forEachIndexed{i,t->NavigationBarItem(selected=tab==i,onClick={tab=i},icon={Text(t.take(1))},label={Text(t)})}}}){pad->Box(Modifier.padding(pad).fillMaxSize()){when(tab){0->Screen("Chats","No conversations yet. Discover a nearby peer to start.");1->Screen("Calls","Voice/video calling architecture is transport-aware; live multi-hop video is not assumed.");2->StatusScreen();3->Screen("Groups","Create private or public groups when peers are available.");4->RelayScreen();else->SettingsScreen()}}}}}
  private fun requestPermissions(){val p=mutableListOf(Manifest.permission.RECORD_AUDIO,Manifest.permission.CAMERA);if(Build.VERSION.SDK_INT>=31)p+=listOf(Manifest.permission.BLUETOOTH_SCAN,Manifest.permission.BLUETOOTH_CONNECT,Manifest.permission.BLUETOOTH_ADVERTISE);permissions.launch(p.toTypedArray())}
  @Composable fun Screen(title:String,body:String){Column(Modifier.padding(20.dp)){Text(title,style=MaterialTheme.typography.headlineMedium);Spacer(Modifier.height(12.dp));Text(body);Spacer(Modifier.height(24.dp));Button(onClick={requestPermissions()}){Text("Grant device permissions")}}}
